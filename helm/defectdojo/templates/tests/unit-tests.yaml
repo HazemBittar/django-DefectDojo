@@ -30,7 +30,7 @@ spec:
             name: {{ $fullName }}
       env:
         - name: DD_DATABASE_USER
-          value: {{ if eq .Values.database "postgresql" }}{{ .Values.postgresql.postgresqlUsername }}{{ end }}{{ if eq .Values.database "mysql" }}root{{ end }}
+          value: {{ if eq .Values.database "postgresql" }}{{ .Values.postgresql.auth.username }}{{ end }}{{ if eq .Values.database "postgresqlha" }}{{ .Values.postgresqlha.postgresql.username }}{{ end }}
         - name: DD_CELERY_BROKER_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -43,13 +43,12 @@ spec:
           valueFrom:
             secretKeyRef:
               {{- if eq .Values.database "postgresql" }}
-              name: {{ .Values.postgresql.existingSecret }}
-              key: {{ .Values.postgresql.secretKey }}
-              {{- else if eq .Values.database "mysql" }}
-              name: {{ .Values.mysql.existingSecret }}
-              key: {{ .Values.mysql.secretKey }}
+              name: {{ .Values.postgresql.auth.existingSecret }}
+              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+              {{- else if eq .Values.database "postgresqlha" }}
+              name: "{{ .Values.postgresqlha.postgresql.existingSecret }}"
+              key: postgresql-postgres-password
               {{- end }}
-              key: {{ if eq .Values.database "postgresql" }}{{ .Values.database }}-password{{ end }}{{ if eq .Values.database "mysql" }}{{ .Values.database }}-root-password{{ end }}
         - name: DD_DEBUG
           value: 'True'
         - name: DD_SECRET_KEY

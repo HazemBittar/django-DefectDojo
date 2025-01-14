@@ -3,8 +3,7 @@ import json
 from dojo.models import Finding
 
 
-class HadolintParser(object):
-
+class HadolintParser:
     def get_scan_types(self):
         return ["Hadolint Dockerfile check"]
 
@@ -22,39 +21,45 @@ class HadolintParser(object):
         items = {}
         for node in tree:
             item = get_item(node, test)
-            unique_key = str(node['line']) + "-" + str(node['column']) + node['code'] + node['file']
+            unique_key = (
+                str(node["line"])
+                + "-"
+                + str(node["column"])
+                + node["code"]
+                + node["file"]
+            )
             items[unique_key] = item
 
         return items.values()
 
 
 def get_item(vulnerability, test):
-    if 'level' in vulnerability:
+    if "level" in vulnerability:
         # If we're dealing with a license finding, there will be no cvssScore
-        if vulnerability['level'] == "error":
+        if vulnerability["level"] == "error":
             severity = "Critical"
-        elif vulnerability['level'] == "warning":
+        elif vulnerability["level"] == "warning":
             severity = "High"
         else:
             severity = "Info"
-    # TODO: some seem to not have anything. Needs UNKNOWN new status in the model. Some vuln do not yet have cvss assigned.
+    # TODO: some seem to not have anything. Needs UNKNOWN new status in the
+    # model. Some vuln do not yet have cvss assigned.
     else:
         severity = "Info"
 
     # create the finding object, with 'static' type
     finding = Finding(
-        title=vulnerability['code'] + ": " + vulnerability['file'],
+        title=vulnerability["code"] + ": " + vulnerability["message"],
         test=test,
         severity=severity,
-        description="File: {}:{}\nVulnerability ID: {}\nDetails: {}\n".format(vulnerability['file'], vulnerability['line'], vulnerability['code'], vulnerability['message']),
-        mitigation="No mitigation provided",
-        false_p=False,
-        duplicate=False,
+        file_path=vulnerability["file"],
+        line=vulnerability["line"],
+        description="Vulnerability ID: {}\nDetails: {}\n".format(
+            vulnerability["code"], vulnerability["message"],
+        ),
         static_finding=True,
         dynamic_finding=False,
-        out_of_scope=False,
-        mitigated=None,
-        impact="No impact provided")
+    )
 
     finding.description = finding.description.strip()
 

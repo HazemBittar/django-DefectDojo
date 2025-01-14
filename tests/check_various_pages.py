@@ -1,6 +1,8 @@
-import unittest
-from base_test_class import BaseTestCase
 import sys
+import unittest
+
+from base_test_class import BaseTestCase
+from selenium.webdriver.common.by import By
 
 
 class VariousPagesTest(BaseTestCase):
@@ -12,14 +14,14 @@ class VariousPagesTest(BaseTestCase):
         driver = self.driver
         driver.get(self.base_url + "calendar")
         # click apply to see if this helps webdriver to catch the javascript errors we're seeing
-        driver.find_element_by_css_selector("input.btn.btn-primary").click()
+        driver.find_element(By.CSS_SELECTOR, "input.btn.btn-primary").click()
 
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(BaseTestCase('test_login'))
-    suite.addTest(VariousPagesTest('test_user_status'))
-    suite.addTest(VariousPagesTest('test_calendar_status'))
+    suite.addTest(BaseTestCase("test_login"))
+    suite.addTest(VariousPagesTest("test_user_status"))
+    suite.addTest(VariousPagesTest("test_calendar_status"))
     return suite
 
 

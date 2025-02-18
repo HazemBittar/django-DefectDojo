@@ -10,7 +10,7 @@ DD_SECRET_KEY=#DD_SECRET_KEY#
 # Key for encrypting credentials in the manager
 DD_CREDENTIAL_AES_256_KEY=#DD_CREDENTIAL_AES_256_KEY#
 
-# Database URL, options: postgres://, mysql://, sqlite://, to use unsafe characters encode with urllib.parse.encode
+# Database URL, options: postgres://, to use unsafe characters encode with urllib.parse.encode
 DD_DATABASE_URL=#DD_DATABASE_URL#
 
 # Hosts/domain names that are valid for this site;
@@ -42,9 +42,6 @@ DD_WHITENOISE=True
 
 # Whether to use a secure cookie for the CSRF cookie.
 # DD_CSRF_COOKIE_SECURE=False
-
-# If True, the SecurityMiddleware sets the X-XSS-Protection: 1;
-# DD_SECURE_BROWSER_XSS_FILTER=True
 
 # If True, the SecurityMiddleware sets the X-Content-Type-Options: nosniff;
 # DD_SECURE_CONTENT_TYPE_NOSNIFF=True
